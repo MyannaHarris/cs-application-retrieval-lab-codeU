@@ -61,7 +61,31 @@ public class WikiSearch {
 	 */
 	public WikiSearch or(WikiSearch that) {
         // FILL THIS IN!
-		return null;
+		if(that == null)
+		{
+			return new WikiSearch(map);
+		}
+		if(map == null)
+		{
+			return that;
+		}
+		Map<String, Integer> m = new HashMap<String, Integer>(map);
+		for(String key : map.keySet())
+		{
+			if(that.getRelevance(key)> 0)
+			{
+				m.put(key, m.get(key) + that.getRelevance(key));
+			}
+		}
+		Map<String, Integer> m2 = new HashMap<String, Integer>(that.map);
+		for(String key : that.map.keySet())
+		{
+			if(this.getRelevance(key) == 0)
+			{
+				m.put(key, that.getRelevance(key));
+			}
+		}
+		return new WikiSearch(m);
 	}
 	
 	/**
@@ -72,7 +96,27 @@ public class WikiSearch {
 	 */
 	public WikiSearch and(WikiSearch that) {
         // FILL THIS IN!
-		return null;
+		if(that == null)
+		{
+			return new WikiSearch(null);
+		}
+		if(map == null)
+		{
+			return new WikiSearch(null);
+		}
+		Map<String, Integer> m = new HashMap<String, Integer>(map);
+		for(String key : map.keySet())
+		{
+			if(that.getRelevance(key)== 0)
+			{
+				m.remove(key);
+			}
+			else
+			{
+				m.put(key, m.get(key) + that.getRelevance(key));
+			}
+		}
+		return new WikiSearch(m);
 	}
 	
 	/**
@@ -83,7 +127,23 @@ public class WikiSearch {
 	 */
 	public WikiSearch minus(WikiSearch that) {
         // FILL THIS IN!
-		return null;
+		if(that == null)
+		{
+			return new WikiSearch(map);
+		}
+		if(map == null)
+		{
+			return new WikiSearch(null);
+		}
+		Map<String, Integer> m = new HashMap<String, Integer>(map);
+		for(String key : map.keySet())
+		{
+			if(that.getRelevance(key)> 0)
+			{
+				m.remove(key);
+			}
+		}
+		return new WikiSearch(m);
 	}
 	
 	/**
@@ -105,7 +165,28 @@ public class WikiSearch {
 	 */
 	public List<Entry<String, Integer>> sort() {
         // FILL THIS IN!
-		return null;
+		List<Entry<String, Integer>> l = new LinkedList<Entry<String, Integer>>();
+		for(Map.Entry<String, Integer> entry:map.entrySet())
+		{
+			l.add(entry);
+		}
+		
+        Comparator<Entry<String, Integer>> comparator = new Comparator<Entry<String, Integer>>() {
+            @Override
+            public int compare(Entry<String, Integer> e1, Entry<String, Integer> e2) {
+                if (e1.getValue() < e2.getValue()) {
+                    return -1;
+                }
+                if (e1.getValue() > e2.getValue()) {
+                    return 1;
+                }
+                return 0;
+            }
+        };
+            
+        Collections.sort(l, comparator);
+            
+		return l;
 	}
 
 	/**
